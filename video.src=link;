@@ -1,0 +1,1 @@
+video.src="https://vidsave-sa-j61b.onrender.com/video?url="+encodeURIComponent(link);
