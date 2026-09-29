@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VidSave</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Arial, sans-serif;
+  color: white;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(100,120,255,.35), transparent 30%),
+    radial-gradient(circle at 85% 20%, rgba(255,90,180,.22), transparent 30%),
+    radial-gradient(circle at 50% 90%, rgba(40,180,255,.18), transparent 35%),
+    #07080c;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 92%;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.glass {
+  background: rgba(255,255,255,.075);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    0 20px 60px rgba(0,0,0,.25);
+  backdrop-filter: blur(30px) saturate(150%);
+  -webkit-backdrop-filter: blur(30px) saturate(150%);
+}
+
+nav {
+  height: 72px;
+  margin-top: 15px;
+  padding: 0 18px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.logo span {
+  opacity: .45;
+}
+
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 100px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.7);
+  font-size: 12px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #70ff9a;
+  box-shadow: 0 0 12px #70ff9a;
+}
+
+.hero {
+  text-align: center;
+  padding: 105px 0 50px;
+}
+
+.small-title {
+  display: inline-block;
+  padding: 9px 15px;
+  margin-bottom: 22px;
+  border-radius: 100px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.65);
+  font-size: 13px;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(45px, 9vw, 82px);
+  line-height: .95;
+  letter-spacing: -5px;
+}
+
+h1 span {
+  opacity: .35;
+}
+
+.description {
+  max-width: 620px;
+  margin: 28px auto 0;
+  color: rgba(255,255,255,.5);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.download-box {
+  margin: 42px auto 0;
+  max-width: 850px;
+  padding: 10px;
+  border-radius: 28px;
+}
+
+.input-box {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px;
+  border-radius: 21px;
+  background: rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.09);
+}
+
+.url-input {
+  flex: 1;
+  min-width: 0;
+  height: 55px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: white;
+  padding: 0 16px;
+  font-size: 16px;
+  direction: ltr;
+  text-align: left;
+}
+
+.url-input::placeholder {
+  color: rgba(255,255,255,.3);
+}
+
+.download-button {
+  height: 55px;
+  padding: 0 24px;
+  border-radius: 17px;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(255,255,255,.16);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  transition: .25s;
+}
+
+.download-button:hover {
+  background: rgba(255,255,255,.22);
+  transform: translateY(-1px);
+}
+
+.download-button:active {
+  transform: scale(.96);
+}
+
+.platforms {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 15px;
+}
+
+.platform {
+  padding: 8px 12px;
+  border-radius: 100px;
+  background: rgba(255,255,255,.055);
+  border: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.45);
+  font-size: 11px;
+}
+
+.status {
+  min-height: 25px;
+  margin-top: 18px;
+  color: rgba(255,255,255,.5);
+  font-size: 13px;
+}
+
+.result {
+  display: none;
+  margin: 30px auto 0;
+  max-width: 850px;
+  overflow: hidden;
+  border-radius: 27px;
+}
+
+.video-preview {
+  height: 430px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.25);
+  color: rgba(255,255,255,.35);
+}
+
+.result-content {
+  padding: 23px;
+  text-align: right;
+}
+
+.result-title {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.result-info {
+  color: rgba(255,255,255,.4);
+  margin-top: 7px;
+  font-size: 13px;
+}
+
+.quality-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 20px;
+}
+
+.quality {
+  padding: 11px 17px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.7);
+  cursor: pointer;
+}
+
+.quality.active {
+  background: rgba(255,255,255,.18);
+  color: white;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 15px;
+  margin: 70px 0;
+}
+
+.feature {
+  padding: 25px;
+  border-radius: 23px;
+}
+
+.icon {
+  font-size: 27px;
+  margin-bottom: 18px;
+}
+
+.feature h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.feature p {
+  margin: 0;
+  color: rgba(255,255,255,.4);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.notice {
+  padding: 17px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.07);
+  color: rgba(255,255,255,.3);
+  font-size: 11px;
+  line-height: 1.8;
+  text-align: center;
+}
+
+footer {
+  text-align: center;
+  padding: 30px 0;
+  color: rgba(255,255,255,.25);
+  font-size: 11px;
+}
+
+@media (max-width: 650px) {
+
+  .container {
+    width: 94%;
+  }
+
+  nav {
+    height: 62px;
+  }
+
+  .hero {
+    padding: 75px 0 35px;
+  }
+
+  h1 {
+    letter-spacing: -3px;
+  }
+
+  .input-box {
+    flex-direction: column;
+  }
+
+  .url-input {
+    width: 100%;
+  }
+
+  .download-button {
+    width: 100%;
+  }
+
+  .video-preview {
+    height: 240px;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<nav class="glass">
+  <div class="logo">
+    Vid<span>Save</span>
+  </div>
+
+  <div class="status-pill">
+    <div class="dot"></div>
+    جاهز للتحميل
+  </div>
+</nav>
+
+<main>
+
+<section class="hero">
+
+  <div class="small-title">
+    ✨ تحميل بسيط وسريع
+  </div>
+
+  <h1>
+    فيديوك.<br>
+    <span>بجودة عالية.</span>
+  </h1>
+
+  <p class="description">
+    الصق رابط الفيديو للحصول على خيارات الجودة المتاحة.
+  </p>
+
+  <div class="download-box glass">
+
+    <div class="input-box">
+
+      <input
+        id="urlInput"
+        class="url-input"
+        type="url"
+        placeholder="ألصق رابط الفيديو هنا..."
+      >
+
+      <button
+        id="downloadButton"
+        class="download-button"
+      >
+        جلب الفيديو
+      </button>
+
+    </div>
+
+    <div class="platforms">
+
+      <div class="platform">يوتيوب</div>
+      <div class="platform">تيك توك</div>
+      <div class="platform">إنستغرام</div>
+      <div class="platform">إكس</div>
+
+    </div>
+
+  </div>
+
+  <div id="status" class="status"></div>
+
+  <div id="result" class="result glass">
+
+    <div class="video-preview">
+      معاينة الفيديو 🎬
+    </div>
+
+    <div class="result-content">
+
+      <div class="result-title">
+        الفيديو جاهز
+      </div>
+
+      <div class="result-info">
+        اختر الجودة المتاحة
+      </div>
+
+      <div class="quality-row">
+
+        <button class="quality active">1080p</button>
+        <button class="quality">720p</button>
+        <button class="quality">480p</button>
+        <button class="quality">360p</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="features">
+
+  <div class="feature glass">
+    <div class="icon">🔗</div>
+    <h3>الصق الرابط</h3>
+    <p>ضع رابط الفيديو في الخانة وابدأ بسهولة.</p>
+  </div>
+
+  <div class="feature glass">
+    <div class="icon">🎞️</div>
+    <h3>اختر الجودة</h3>
+    <p>عرض خيارات الجودة المتوفرة للفيديو.</p>
+  </div>
+
+  <div class="feature glass">
+    <div class="icon">📱</div>
+    <h3>مصمم للجوال</h3>
+    <p>واجهة مريحة ومتجاوبة على الآيفون والجوال.</p>
+  </div>
+
+</section>
+
+<div class="notice">
+  استخدم الموقع لتحميل المحتوى الذي تملكه أو لديك إذن بتنزيله،
+  والتزم بحقوق أصحاب المحتوى وشروط المنصة.
+</div>
+
+</main>
+
+<footer>
+  VidSave © 2026
+</footer>
+
+</div>
+
+<script>
+
+const input = document.getElementById("urlInput");
+const button = document.getElementById("downloadButton");
+const status = document.getElementById("status");
+const result = document.getElementById("result");
+
+button.onclick = function() {
+
+  if (!input.value.trim()) {
+    status.textContent = "ألصق رابط الفيديو أولًا 🔗";
+    result.style.display = "none";
+    return;
+  }
+
+  status.textContent = "جاري قراءة الرابط... ⏳";
+  result.style.display = "none";
+
+  setTimeout(function() {
+    status.textContent = "تم التعرف على الرابط ✅";
+    result.style.display = "block";
+  }, 900);
+
+};
+
+document.querySelectorAll(".quality").forEach(function(btn) {
+
+  btn.onclick = function() {
+
+    document.querySelectorAll(".quality")
+      .forEach(function(item) {
+        item.classList.remove("active");
+      });
+
+    btn.classList.add("active");
+
+  };
+
+});
+
+</script>
+
+</body>
+</html>
